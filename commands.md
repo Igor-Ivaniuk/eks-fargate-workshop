@@ -56,3 +56,49 @@ curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/d
 sudo mv -v /tmp/eksctl /usr/local/bin
 eksctl version
 ```
+
+## Create cluster
+
+```
+cat << EOF > cluster.yaml
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: rebrain-cluster
+  region: ${AWS_REGION}
+
+managedNodeGroups:
+- name: nodegroup
+  desiredCapacity: 2
+  instanceType: t3.medium
+  iam:
+    withAddonPolicies:
+      albIngress: true
+
+# fargateProfiles:
+#   - name: fp-default
+#     selectors:
+#       # All workloads in the "default" Kubernetes namespace will be
+#       # scheduled onto Fargate:
+#       - namespace: default
+#       # All workloads in the "kube-system" Kubernetes namespace will be
+#       # scheduled onto Fargate:
+#       - namespace: kube-system
+#   - name: fp-dev
+#     selectors:
+#       # All workloads in the "dev" Kubernetes namespace matching the following
+#       # label selectors will be scheduled onto Fargate:
+#       - namespace: dev
+#         labels:
+#           env: dev
+
+secretsEncryption:
+  keyARN: ${MASTER_ARN}
+EOF
+```
+
+```
+eksctl create cluster -f cluster.yaml
+```
