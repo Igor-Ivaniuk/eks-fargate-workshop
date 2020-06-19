@@ -66,7 +66,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: rebrain-cluster
+  name: rebrain-demo
   region: ${AWS_REGION}
 
 managedNodeGroups:
