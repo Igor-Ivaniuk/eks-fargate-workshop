@@ -90,4 +90,5 @@ helm -n 2048-game delete 2048-game
 kubectl -n 2048-game delete pod,deployment,svc,ing --all
 kubectl delete namespace 2048-game
 eksctl delete fargateprofile --cluster rebrain-demo --name 2048-game
+eksctl delete cluster -f cluster.yaml
 ```
