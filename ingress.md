@@ -3,6 +3,7 @@
 ### Verify the Name of the Cluster with the CLI
 
 ```
+mkdir ingress
 cd ingress
 aws eks list-clusters
 ```
@@ -73,6 +74,8 @@ kubectl describe service service-2048 --namespace=2048-game
 kubectl -n 2048-game delete pod,deployment,svc,ing --all
 kubectl delete -f alb-ingress-controller.yaml
 kubectl delete namespace 2048-game
+cd ..
+rm -rf ingress
 ```
 
 

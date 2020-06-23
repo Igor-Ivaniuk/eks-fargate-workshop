@@ -2,11 +2,8 @@
 
 ### Create a Fargate profile
 ```
-eksctl create fargateprofile --cluster rebrain-demo --name 2048-game --namespace 2048-game
-```
-
-### Create a Fargate profile
-```
+mkdir fargate
+cd fargate
 eksctl create fargateprofile --cluster rebrain-demo --name 2048-game --namespace 2048-game
 eksctl get fargateprofile --cluster rebrain-demo -o yaml
 ```
@@ -15,11 +12,14 @@ eksctl get fargateprofile --cluster rebrain-demo -o yaml
 ```
 wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/2048/2048-namespace.yaml
 wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/2048/2048-deployment.yaml
-wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.5/docs/examples/2048/2048-service.yaml
+wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/2048/2048-service.yaml
 kubectl apply -f 2048-namespace.yaml
 kubectl apply -f 2048-deployment.yaml
 kubectl apply -f 2048-service.yaml
 ```
+
+### Examine the nodes
+```kubectl get nodes```
 
 ### Add resources requests to deployment
 ```
@@ -68,12 +68,12 @@ kubectl -n 2048-game rollout status deployment 2048-game-aws-alb-ingress-control
 
 ### Deploying ingress
 ```
-wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.5/docs/examples/2048/2048-ingress.yaml
-
+wget https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/2048/2048-ingress.yaml
+```
 add annotation  alb.ingress.kubernetes.io/target-type: ip
 (or use command below)
+```
 yq w -i 2048-ingress.yaml 'metadata.annotations."alb.ingress.kubernetes.io/target-type"' ip
-
 kubectl apply -f 2048-ingress.yaml
 ```
 
@@ -89,6 +89,8 @@ kubectl delete -f 2048-ingress.yaml
 helm -n 2048-game delete 2048-game
 kubectl -n 2048-game delete pod,deployment,svc,ing --all
 kubectl delete namespace 2048-game
+cd ..
+rm -rf fargate
 eksctl delete fargateprofile --cluster rebrain-demo --name 2048-game
 eksctl delete cluster -f cluster.yaml
 ```
